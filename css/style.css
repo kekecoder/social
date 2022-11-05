@@ -1,0 +1,28 @@
+textarea {
+  height: 120px !important;
+  resize: none;
+}
+
+@media only screen and (min-width: 768px) {
+  textarea {
+    width: 65% !important;
+    margin: 0 auto;
+    height: 190px !important;
+  }
+
+  label {
+    margin-left: 116px;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  textarea {
+    width: 65% !important;
+    margin: 0 auto;
+    height: 190px !important;
+  }
+
+  label {
+    margin-left: 190px;
+  }
+}
