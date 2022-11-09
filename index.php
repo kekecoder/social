@@ -1,38 +1,60 @@
 <?php
 $error_msg = [];
 $success = [];
-require_once 'process/dbconfig.php';
+require_once 'process/dblib.php';
+$story_ids = [
+    'stories' => "",
+    'id' => ''
+];
+$story = "";
+if (isset($_GET['id'])) {
+    $story_ids = get_story_id($_GET['id']);
+}
 
-// $date = date('Y-m-d H:i');
-// echo $date;
-// exit;
-
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $story = $_POST['stories'];
+if (isset($_POST['submit'])) {
+    $story = trim(htmlspecialchars(($_POST['stories']), ENT_QUOTES));
     $date = date('Y-m-d H:i');
+    $id = $_POST['id'] ?? '';
+
     if (empty($story)) {
-        $error_msg['stories'] = "This field cannot be empy";
+        $error_msg['stories'] = "This field cannot be empty";
+    } else if (strlen($story) <= 1) {
+        $error_msg['stories'] = "String is too low";
     }
 
     if (empty($error_msg)) {
-        $query = $conn->prepare("INSERT INTO stories(story, created_at) VALUES(?, '$date');");
-        $query->bind_param("s", $story);
-        $query->execute();
-        if ($query->affected_rows === 1) {
-            $success[] = "Story Successfully posted";
+        if ($id) {
+            $query = update_story($id, $story);
+            if ($query->affected_rows === 1) {
+                $success[] = "Story Updated posted";
+            }
+            $story_ids = [];
+            // header("Location: /");
+        } else {
+            $query = insert($story, $date);
+            if ($query->affected_rows === 1) {
+                $success[] = "Story Successfully posted";
+            } else {
+                $error_msg[] = "Something went wrong";
+            }
+            $story = "";
         }
-        $query->close();
     }
 }
 
-$query = "SELECT * FROM stories ORDER BY created_at DESC";
-$result = $conn->query($query);
-$rows = $result->fetch_all(MYSQLI_ASSOC);
-// echo '<pre>';
-// var_dump($rows);
-// echo '</pre>';
-// exit;
+// Handle Delete
+if (isset($_POST['delete'])) {
+    delete_story($_POST['id']);
+    header("Location: /");
+}
+
+// All stories
+$rows = get_all_story();
+
+// <?php echo $story ?? "" 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,7 +101,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                 <p class="lead">This is your personal Page</p>
             </div>
         </div>
-        <div class="container-fluid">
+        <div class="container">
             <?php
             if (isset($success)) : ?>
             <?php foreach ($success as $pass) : ?>
@@ -90,9 +112,19 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
             <?php endif ?>
             <form action="" method="post" enctype="multipart/form-data">
                 <div class="form-group">
+                    <input type="hidden" name="id" value="<?php foreach ($story_ids as $story_id) {
+                                                                echo $story_id['id'] ?? '';
+                                                            } ?>">
+                </div>
+                <div class="form-group">
                     <label for="post">Create Post</label>
                     <textarea name="stories"
-                        class="form-control <?php echo isset($error_msg['stories']) ? 'is-invalid' : '' ?>"></textarea>
+                        class="form-control <?php echo isset($error_msg['stories']) ? 'is-invalid' : '' ?>"><?php foreach ($story_ids as $story_id) {
+                                                                                                                                        echo $story_id['story'] ?? '';
+                                                                                                                                    } ?></textarea>
+                    <small class="invalid-feedback">
+                        <?= $error_msg['stories'] ?? "" ?>
+                    </small>
                 </div>
                 <div class="row">
                     <div class="form-group d-flex">
@@ -100,35 +132,45 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
                             <input type="file" name="upload_img">
                         </div>
                         <div class="col ml-3">
-                            <button class="btn btn-outline-danger btn-sm">Create Post</button>
+                            <?php if (isset($_GET['id'])) : ?>
+                            <input type="submit" name="submit" value="Update Post"
+                                class="btn btn-outline-primary btn-sm">
+                            <?php else : ?>
+                            <input type="submit" name="submit" value="Create Post"
+                                class="btn btn-outline-danger btn-sm">
+                            <?php endif ?>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-    <div class="container-fluid mt-3 mb-3">
-        <?php if ($result->num_rows > 0) : ?>
+    <div class="container mt-3 mb-3">
+        <?php if (count($rows) === 0) : ?>
+        <?= "No Stories" ?>
+        <?php endif ?>
         <?php foreach ($rows as $row) : ?>
-        <div class="card-body bg-secondary text-white mb-4">
-            <p class="card-text">
+        <div class='card-body bg-secondary text-white mb-4'>
+            <p class='card-text'>
                 <?= $row['story'] ?>
             </p>
-            <div class="card-footer">
-                <div class="row">
-                    <div class="col">
-                        <button class="btn btn-primary">Edit</button>
+            <div class='card-footer'>
+                <div class='row'>
+                    <div class='col'>
+                        <a href="index.php?id=<?= $row['id'] ?>" class='btn btn-primary'>Edit</a>
                     </div>
-                    <div class="col">
-                        <button class="btn btn-danger ml-5">Delete</button>
+                    <div class='col'>
+                        <form action="" method="post">
+                            <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                            <input name="delete" type="submit" class="btn btn-danger" value="Delete">
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
         <?php endforeach ?>
-        <?php endif ?>
     </div>
-    <script src="js/jquery.min.js"></script>
+    <script src=" js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
 </body>
 
