@@ -2,6 +2,7 @@
 $error_msg = [];
 $success = [];
 require_once 'process/dblib.php';
+require_once 'process/randomString.php';
 $story_ids = [
     'stories' => "",
     'id' => ''
@@ -23,6 +24,33 @@ if (isset($_POST['submit'])) {
     }
 
     if (empty($error_msg)) {
+        if (isset($_FILES['upload_img']) && isset($_FILES['error']) == 0) {
+            $allowed_img = [
+                'jpg' => 'image/jpg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+            ];
+
+            $file_name = $_FILES['upload_img']['name'];
+            $file_type = $_FILES['upload_img']['type'];
+            $file_size = $_FILES['upload_img']['size'];
+
+            $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+            if (!array_key_exists($ext, $allowed_img)) {
+                $error_msg['upload_img'] = "Please select a valid file format.";
+            }
+
+            $max_size = 5 * 1024 * 1024;
+            if ($file_size >= $max_size) {
+                $error_msg['upload_img'] = "Error: The filesize is too large, your file should not be more than 5MB";
+            }
+
+            if (in_array($file_type, $allowed_img)) {
+                $img_path = random_string(10) . str_replace(" ", " ", basename($_FILES["upload_img"]["name"]));
+
+                move_uploaded_file($_FILES['upload_img']['tmp_name'], "image/" . $img_path);
+            }
+        }
         if ($id) {
             $query = update_story($id, $story);
             if ($query->affected_rows === 1) {
@@ -31,7 +59,7 @@ if (isset($_POST['submit'])) {
             $story_ids = [];
             // header("Location: /");
         } else {
-            $query = insert($story, $date);
+            $query = insert($story, $date, $img_path ?? null);
             if ($query->affected_rows === 1) {
                 $success[] = "Story Successfully posted";
             } else {
@@ -111,6 +139,7 @@ $rows = get_all_story();
             <?php endforeach ?>
             <?php endif ?>
             <form action="" method="post" enctype="multipart/form-data">
+                <input type="file" name="upload_img">
                 <div class="form-group">
                     <input type="hidden" name="id" value="<?php foreach ($story_ids as $story_id) {
                                                                 echo $story_id['id'] ?? '';
@@ -129,9 +158,9 @@ $rows = get_all_story();
                 <div class="row">
                     <div class="form-group d-flex">
                         <div class="col-6">
-                            <input type="file" name="upload_img">
+                            <!-- <input type="file" name="upload_img"> -->
                         </div>
-                        <div class="col ml-3">
+                        <div class="col-6 ml-3">
                             <?php if (isset($_GET['id'])) : ?>
                             <input type="submit" name="submit" value="Update Post"
                                 class="btn btn-outline-primary btn-sm">

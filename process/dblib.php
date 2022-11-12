@@ -1,11 +1,11 @@
 <?php
 require_once 'dbconfig.php';
 
-function insert(string $story, $date)
+function insert(string $story, $date, $img = "")
 {
     $conn = db();
-    $query = $conn->prepare("INSERT INTO stories(story, created_at) VALUES(?, '$date');");
-    $query->bind_param("s", $story);
+    $query = $conn->prepare("INSERT INTO stories(story, image_path, created_at) VALUES(?, ?, '$date');");
+    $query->bind_param("ss", $story, $img);
     $query->execute();
 
     return $query;
