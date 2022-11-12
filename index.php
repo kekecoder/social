@@ -46,7 +46,8 @@ if (isset($_POST['submit'])) {
             }
 
             if (in_array($file_type, $allowed_img)) {
-                $img_path = random_string(10) . str_replace(" ", " ", basename($_FILES["upload_img"]["name"]));
+                // $img_path = random_string(10) . str_replace(" ", " ", basename($_FILES["upload_img"]["name"]));
+                $img_path = random_string(10) . "." . $ext;
 
                 move_uploaded_file($_FILES['upload_img']['tmp_name'], "image/" . $img_path);
             }
@@ -54,7 +55,7 @@ if (isset($_POST['submit'])) {
         if ($id) {
             $query = update_story($id, $story);
             if ($query->affected_rows === 1) {
-                $success[] = "Story Updated posted";
+                $success[] = "Story Updated";
             }
             $story_ids = [];
             // header("Location: /");
@@ -93,6 +94,15 @@ $rows = get_all_story();
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <title>Dashboard</title>
+    <style>
+    .mls {
+        margin-left: 6.7rem;
+    }
+
+    .fml {
+        margin-left: 10rem;
+    }
+    </style>
 </head>
 
 <body>
@@ -139,7 +149,6 @@ $rows = get_all_story();
             <?php endforeach ?>
             <?php endif ?>
             <form action="" method="post" enctype="multipart/form-data">
-                <input type="file" name="upload_img">
                 <div class="form-group">
                     <input type="hidden" name="id" value="<?php foreach ($story_ids as $story_id) {
                                                                 echo $story_id['id'] ?? '';
@@ -158,9 +167,9 @@ $rows = get_all_story();
                 <div class="row">
                     <div class="form-group d-flex">
                         <div class="col-6">
-                            <!-- <input type="file" name="upload_img"> -->
+                            <input type="file" name="upload_img">
                         </div>
-                        <div class="col-6 ml-3">
+                        <div class="col-6 mls">
                             <?php if (isset($_GET['id'])) : ?>
                             <input type="submit" name="submit" value="Update Post"
                                 class="btn btn-outline-primary btn-sm">
@@ -179,24 +188,28 @@ $rows = get_all_story();
         <?= "No Stories" ?>
         <?php endif ?>
         <?php foreach ($rows as $row) : ?>
-        <div class='card-body bg-secondary text-white mb-4'>
-            <p class='card-text'>
-                <?= $row['story'] ?>
-            </p>
-            <div class='card-footer'>
-                <div class='row'>
-                    <div class='col'>
-                        <a href="index.php?id=<?= $row['id'] ?>" class='btn btn-primary'>Edit</a>
-                    </div>
-                    <div class='col'>
-                        <form action="" method="post">
-                            <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                            <input name="delete" type="submit" class="btn btn-danger" value="Delete">
-                        </form>
+        <div class="card mb-3" style="width: 100%;">
+            <img class="card-img-top" src="image/<?= $row['image_path'] ?>" alt="">
+            <div class='card-body bg-secondary text-white'>
+                <p class='card-text'>
+                    <?= $row['story'] ?>
+                </p>
+                <div class='card-footer'>
+                    <div class='row'>
+                        <div class='col'>
+                            <a href="index.php?id=<?= $row['id'] ?>" class='btn btn-primary'>Edit</a>
+                        </div>
+                        <div class='col'>
+                            <form action="" method="post" class="d-inline fml">
+                                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                                <input name="delete" type="submit" class="btn btn-danger" value="Delete">
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <?php endforeach ?>
     </div>
     <script src=" js/jquery.min.js"></script>
