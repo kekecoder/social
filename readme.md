@@ -8,3 +8,9 @@ This project is basically a demo project to create a social media platform makin
 - Change Email Address
 - Update Profile
 - Logout
+- Pagination
+- Delete Post
+- View all Post
+- File Upload
+- Renaming image before uploading
+- Saving image to the database
