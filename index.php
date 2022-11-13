@@ -1,4 +1,30 @@
 <?php
+require_once('process/dblib.php');
+$conn = db();
+$limit = 6;
+$query = "SELECT * FROM stories";
+$result = mysqli_query($conn, $query);
+$total_rows = mysqli_num_rows($result);
+
+$total_pages = ceil($total_rows / $limit);
+
+if (!isset($_GET['page'])) {
+    $page_num = 1;
+} else {
+    $page_num = $_GET['page'];
+}
+
+$initial_page = ($page_num - 1) * $limit;
+$query = "SELECT * FROM stories ORDER BY created_at DESC LIMIT $initial_page, $limit";
+$result = mysqli_query($conn, $query);
+$rows = $result->fetch_all(MYSQLI_ASSOC);
+
+// while ($rows = mysqli_fetch_array($result)) {
+//     echo $rows['story'];
+// }
+?>
+
+<?php
 $error_msg = [];
 $success = [];
 require_once 'process/dblib.php';
@@ -78,7 +104,9 @@ if (isset($_POST['delete'])) {
 }
 
 // All stories
-$rows = get_all_story();
+// $rows = get_all_story();
+// using pagination
+
 
 // <?php echo $story ?? "" 
 ?>
@@ -211,6 +239,16 @@ $rows = get_all_story();
         </div>
 
         <?php endforeach ?>
+        <nav>
+            <ul class="pagination">
+                <?php
+                for ($page_num = 1; $page_num <= $total_pages; $page_num++) {
+                    echo '<li class = "page-item"><a class = "page-link" href="index.php?page=' . $page_num . '">' . $page_num . '</a></li>';
+                }
+                ?>
+            </ul>
+        </nav>
+
     </div>
     <script src=" js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
