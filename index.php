@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once('process/dblib.php');
 $conn = db();
 $limit = 6;
@@ -22,9 +23,7 @@ $rows = $result->fetch_all(MYSQLI_ASSOC);
 // while ($rows = mysqli_fetch_array($result)) {
 //     echo $rows['story'];
 // }
-?>
 
-<?php
 $error_msg = [];
 $success = [];
 require_once 'process/dblib.php';
@@ -106,152 +105,103 @@ if (isset($_POST['delete'])) {
 // All stories
 // $rows = get_all_story();
 // using pagination
-
-
-// <?php echo $story ?? "" 
+require_once "utility/head.html";
+require_once "utility/nav.php"
 ?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <title>Dashboard</title>
-    <style>
-    .mls {
-        margin-left: 6.7rem;
-    }
-
-    .fml {
-        margin-left: 10rem;
-    }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">Logout</a>
-                </li>
-            </ul>
+<?php
+if (isset($_SESSION['success'])) : ?>
+<div class="alert alert-success">
+    <?= $_SESSION['success'] ?>
+</div>
+<?php endif ?>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container text-center">
+        <h1 class="display">Welcome <?= ($_SESSION['username']) ?></h1>
+        <p class="lead">This is your personal Page</p>
+    </div>
+</div>
+<div class="container">
+    <?php
+    if (isset($success)) : ?>
+    <?php foreach ($success as $pass) : ?>
+    <div class="alert alert-success">
+        <?= $pass ?>
+    </div>
+    <?php endforeach ?>
+    <?php endif ?>
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <input type="hidden" name="id" value="<?php foreach ($story_ids as $story_id) {
+                                                        echo $story_id['id'] ?? '';
+                                                    } ?>">
         </div>
-    </nav>
-    <div class="container mt-3">
-        <div class="jumbotron jumbotron-fluid">
-            <div class="container text-center">
-                <h1 class="display">Welcome User</h1>
-                <p class="lead">This is your personal Page</p>
+        <div class="form-group">
+            <label for="post">Create Post</label>
+            <textarea name="stories"
+                class="form-control <?php echo isset($error_msg['stories']) ? 'is-invalid' : '' ?>"><?php foreach ($story_ids as $story_id) {
+                                                                                                                                echo $story_id['story'] ?? '';
+                                                                                                                            } ?></textarea>
+            <small class="invalid-feedback">
+                <?= $error_msg['stories'] ?? "" ?>
+            </small>
+        </div>
+        <div class="row">
+            <div class="form-group d-flex">
+                <div class="col-6">
+                    <input type="file" name="upload_img">
+                </div>
+                <div class="col-6 mls">
+                    <?php if (isset($_GET['id'])) : ?>
+                    <input type="submit" name="submit" value="Update Post" class="btn btn-outline-primary btn-sm">
+                    <?php else : ?>
+                    <input type="submit" name="submit" value="Create Post" class="btn btn-outline-danger btn-sm">
+                    <?php endif ?>
+                </div>
             </div>
         </div>
-        <div class="container">
+    </form>
+</div>
+</div>
+<div class="container mt-3 mb-3">
+    <?php if (count($rows) === 0) : ?>
+    <?= "No Stories" ?>
+    <?php endif ?>
+    <?php foreach ($rows as $row) : ?>
+    <div class="card mb-3" style="width: 100%;">
+        <img class="card-img-top" src="image/<?= $row['image_path'] ?>" alt="">
+        <div class='card-body bg-secondary text-white'>
+            <p class='card-text'>
+                <?= $row['story'] ?>
+            </p>
+            <div class='card-footer'>
+                <div class='row'>
+                    <div class='col'>
+                        <a href="index.php?id=<?= $row['id'] ?>" class='btn btn-primary'>Edit</a>
+                    </div>
+                    <div class='col'>
+                        <form action="" method="post" class="d-inline fml">
+                            <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                            <input name="delete" type="submit" class="btn btn-danger" value="Delete">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php endforeach ?>
+    <nav>
+        <ul class="pagination">
             <?php
-            if (isset($success)) : ?>
-            <?php foreach ($success as $pass) : ?>
-            <div class="alert alert-success">
-                <?= $pass ?>
-            </div>
-            <?php endforeach ?>
-            <?php endif ?>
-            <form action="" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <input type="hidden" name="id" value="<?php foreach ($story_ids as $story_id) {
-                                                                echo $story_id['id'] ?? '';
-                                                            } ?>">
-                </div>
-                <div class="form-group">
-                    <label for="post">Create Post</label>
-                    <textarea name="stories"
-                        class="form-control <?php echo isset($error_msg['stories']) ? 'is-invalid' : '' ?>"><?php foreach ($story_ids as $story_id) {
-                                                                                                                                        echo $story_id['story'] ?? '';
-                                                                                                                                    } ?></textarea>
-                    <small class="invalid-feedback">
-                        <?= $error_msg['stories'] ?? "" ?>
-                    </small>
-                </div>
-                <div class="row">
-                    <div class="form-group d-flex">
-                        <div class="col-6">
-                            <input type="file" name="upload_img">
-                        </div>
-                        <div class="col-6 mls">
-                            <?php if (isset($_GET['id'])) : ?>
-                            <input type="submit" name="submit" value="Update Post"
-                                class="btn btn-outline-primary btn-sm">
-                            <?php else : ?>
-                            <input type="submit" name="submit" value="Create Post"
-                                class="btn btn-outline-danger btn-sm">
-                            <?php endif ?>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="container mt-3 mb-3">
-        <?php if (count($rows) === 0) : ?>
-        <?= "No Stories" ?>
-        <?php endif ?>
-        <?php foreach ($rows as $row) : ?>
-        <div class="card mb-3" style="width: 100%;">
-            <img class="card-img-top" src="image/<?= $row['image_path'] ?>" alt="">
-            <div class='card-body bg-secondary text-white'>
-                <p class='card-text'>
-                    <?= $row['story'] ?>
-                </p>
-                <div class='card-footer'>
-                    <div class='row'>
-                        <div class='col'>
-                            <a href="index.php?id=<?= $row['id'] ?>" class='btn btn-primary'>Edit</a>
-                        </div>
-                        <div class='col'>
-                            <form action="" method="post" class="d-inline fml">
-                                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                                <input name="delete" type="submit" class="btn btn-danger" value="Delete">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            for ($page_num = 1; $page_num <= $total_pages; $page_num++) {
+                echo '<li class = "page-item"><a class = "page-link" href="index.php?page=' . $page_num . '">' . $page_num . '</a></li>';
+            }
+            ?>
+        </ul>
+    </nav>
 
-        <?php endforeach ?>
-        <nav>
-            <ul class="pagination">
-                <?php
-                for ($page_num = 1; $page_num <= $total_pages; $page_num++) {
-                    echo '<li class = "page-item"><a class = "page-link" href="index.php?page=' . $page_num . '">' . $page_num . '</a></li>';
-                }
-                ?>
-            </ul>
-        </nav>
-
-    </div>
-    <script src=" js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+</div>
+<?php require_once "utility/util.html" ?>
 </body>
 
 </html>

@@ -1,6 +1,24 @@
+.mls {
+  margin-left: 6.7rem;
+}
+
+.fml {
+  margin-left: 10rem;
+}
+
 textarea {
   height: 120px !important;
   resize: none;
+}
+
+@media only screen and (max-width: 280px) {
+  .mls {
+    margin-left: 6.7rem;
+  }
+
+  .fml {
+    margin-left: 10rem;
+  }
 }
 
 @media only screen and (min-width: 768px) {

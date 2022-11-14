@@ -17,4 +17,11 @@ function random_string(int $length)
     return $random_string;
 }
 
-// echo random_string(7);
+function valid_string($string)
+{
+    $string = trim($string);
+    $string = htmlspecialchars($string, ENT_QUOTES);
+    $string = ucfirst($string);
+
+    return $string;
+}
