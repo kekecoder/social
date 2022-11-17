@@ -11,3 +11,28 @@ function register($first_name, $last_name, $email, $country, $password)
     $query->execute();
     return $query;
 }
+
+function email_exists(string $email)
+{
+    $conn = db();
+    $query = $conn->prepare("SELECT email FROM users WHERE email = ?");
+    $query->bind_param("s", $email);
+    $query->execute();
+
+    $result = $query->get_result();
+    if ($result->num_rows === 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function login(string $email)
+{
+    $conn = db();
+    $query  = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $query->bind_param('s', $email);
+    $query->execute();
+
+    return $query->get_result()->fetch_assoc();
+}

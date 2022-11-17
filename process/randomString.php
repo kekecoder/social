@@ -21,7 +21,7 @@ function valid_string($string)
 {
     $string = trim($string);
     $string = htmlspecialchars($string, ENT_QUOTES);
-    $string = ucfirst($string);
+    $string = strtolower($string);
 
     return $string;
 }

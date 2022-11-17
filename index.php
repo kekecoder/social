@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: users/login.php");
+}
 require_once('process/dblib.php');
 $conn = db();
 $limit = 6;
@@ -110,13 +113,16 @@ require_once "utility/nav.php"
 ?>
 <?php
 if (isset($_SESSION['success'])) : ?>
-<div class="alert alert-success">
-    <?= $_SESSION['success'] ?>
+<div class="alert alert-success alert-dimissible fade show">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <p><?= $_SESSION['success'] ?></p>
 </div>
 <?php endif ?>
 <div class="jumbotron jumbotron-fluid">
     <div class="container text-center">
-        <h1 class="display">Welcome <?= ($_SESSION['username']) ?></h1>
+        <h1 class="display">Welcome <?= ucfirst($_SESSION['username']) ?></h1>
         <p class="lead">This is your personal Page</p>
     </div>
 </div>
@@ -124,8 +130,11 @@ if (isset($_SESSION['success'])) : ?>
     <?php
     if (isset($success)) : ?>
     <?php foreach ($success as $pass) : ?>
-    <div class="alert alert-success">
-        <?= $pass ?>
+    <div class="alert alert-success alert-dimissible fade show">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <p><?= $pass ?></p>
     </div>
     <?php endforeach ?>
     <?php endif ?>

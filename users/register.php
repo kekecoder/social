@@ -12,7 +12,8 @@ require_once "../utility/nav.php";
             <div class="form-group">
                 <label for="">First Name</label>
                 <input type="text" name="first_name" id=""
-                    class="form-control <?php echo isset($_SESSION['first_name']) ? 'is-invalid' : '' ?>">
+                    class="form-control <?php echo isset($_SESSION['first_name']) ? 'is-invalid' : '' ?>"
+                    value="<?= $_SESSION['help_fn'] ?>">
                 <small class="invalid-feedback">
                     <?= $_SESSION['first_name'] ?? '' ?>
                 </small>
@@ -22,7 +23,8 @@ require_once "../utility/nav.php";
             <div class="form-group">
                 <label for="">Last Name</label>
                 <input type="text" name="last_name" id=""
-                    class="form-control <?php echo isset($_SESSION['last_name']) ? 'is-invalid' : '' ?>">
+                    class="form-control <?php echo isset($_SESSION['last_name']) ? 'is-invalid' : '' ?>"
+                    value="<?= $_SESSION['help_ln'] ?>">
                 <small class="invalid-feedback">
                     <?= $_SESSION['last_name'] ?? '' ?>
                 </small>
@@ -34,7 +36,8 @@ require_once "../utility/nav.php";
             <div class="form-group">
                 <label for="">Email</label>
                 <input type="email" name="email" id=""
-                    class="form-control <?php echo isset($_SESSION['email']) ? 'is-invalid' : '' ?>">
+                    class="form-control <?php echo isset($_SESSION['email']) ? 'is-invalid' : '' ?>"
+                    value="<?= $_SESSION['help_email'] ?>">
                 <small class="invalid-feedback">
                     <?= $_SESSION['email'] ?? '' ?>
                 </small>
