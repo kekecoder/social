@@ -4,10 +4,6 @@ require_once "randomString.php";
 require_once "users.php";
 
 define("REQUIRED", "This field is required");
-$_SESSION['help_email'] = $_POST['email'];
-$_SESSION['help_fn'] = $_POST['first_name'];
-$_SESSION['help_ln'] = $_POST['last_name'];
-
 
 switch (true) {
     case isset($_POST['register']):
@@ -85,10 +81,12 @@ switch (true) {
 
         if (empty($_SESSION)) {
             if ($result = login($email)) {
+                $id = $result['id'];
                 $username = $result['first_name'];
                 $hashed_pass = $result['password'];
 
                 if (password_verify($password, $hashed_pass)) {
+                    $_SESSION['id'] = $id;
                     $_SESSION['username'] = $username;
                     $_SESSION['success'] = "Login Successful";
                     header("Location: /");
@@ -101,6 +99,68 @@ switch (true) {
                 header("Location: /users/login.php");
             }
         }
+        break;
+    case isset($_POST['change_password']):
+        $email = valid_string($_POST['email']);
+        $password = valid_string($_POST['password']);
+        $cp = valid_string($_POST['cp']);
+
+        if (!$email) {
+            $_SESSION['email'] = REQUIRED;
+            header('Location: /users/change-pass.php');
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['email'] = "This is not the required email format";
+            header('Location: /users/change-pass.php');
+        } elseif (!email_exists($email)) {
+            $_SESSION['email'] = "This email does not exists in our records";
+            header('Location: /users/change-pass.php');
+        }
+
+        if (!$password) {
+            if (!$password) {
+                $_SESSION['password'] = REQUIRED;
+                header('Location: /users/change-pass.php');
+            } elseif (strlen($password) < 5) {
+                $_SESSION['password'] = "Password length is too short";
+                header('Location: /users/change-pass.php');
+            }
+        }
+
+        if (!$cp) {
+            $_SESSION['cp'] = REQUIRED;
+            header('Location: /users/change-pass.php');
+        } elseif ($password !== $cp) {
+            $_SESSION['cp'] = "Password do not match";
+            header('Location: /users/change-pass.php');
+        }
+
+        if (empty($_SESSION)) {
+            change_password($email, $password);
+            $_SESSION['success'] = "Password Changed successfully";
+            header('Location: /users/change-pass.php');
+        }
+        break;
+    case isset($_POST['id']):
+        logout();
+        $_SESSION['success'] = "You are logged out";
+        header("Location: /users/login.php");
+        break;
+    case isset($_POST['change_email']):
+        $email = valid_string($_POST['email']);
+        if (!$email) {
+            $_SESSION['email'] = REQUIRED;
+            header('Location: /users/change-email.php');
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['email'] = "This is not the required email format";
+            header('Location: /users/change-email.php');
+        } elseif (email_exists($email)) {
+            $_SESSION['email'] = "This email is already taken";
+            header('Location: /users/change-email.php');
+        }
+        if (empty($_SESSION)) {
+        }
+        break;
     default:
+        http_response_code(404);
         echo "Error: wrong road";
 }

@@ -1,8 +1,5 @@
 <?php
 session_start();
-if (!isset($_SESSION['username'])) {
-    header("Location: users/login.php");
-}
 require_once('process/dblib.php');
 $conn = db();
 $limit = 6;
@@ -118,11 +115,12 @@ if (isset($_SESSION['success'])) : ?>
         <span aria-hidden="true">&times;</span>
     </button>
     <p><?= $_SESSION['success'] ?></p>
+    <?php unset($_SESSION['success']) ?>
 </div>
 <?php endif ?>
 <div class="jumbotron jumbotron-fluid">
     <div class="container text-center">
-        <h1 class="display">Welcome <?= ucfirst($_SESSION['username']) ?></h1>
+        <h1 class="display">Welcome <?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : '' ?></h1>
         <p class="lead">This is your personal Page</p>
     </div>
 </div>
@@ -138,18 +136,19 @@ if (isset($_SESSION['success'])) : ?>
     </div>
     <?php endforeach ?>
     <?php endif ?>
+    <?php if (isset($_SESSION['username'])) : ?>
     <form action="" method="post" enctype="multipart/form-data">
         <div class="form-group">
             <input type="hidden" name="id" value="<?php foreach ($story_ids as $story_id) {
-                                                        echo $story_id['id'] ?? '';
-                                                    } ?>">
+                                                            echo $story_id['id'] ?? '';
+                                                        } ?>">
         </div>
         <div class="form-group">
             <label for="post">Create Post</label>
             <textarea name="stories"
                 class="form-control <?php echo isset($error_msg['stories']) ? 'is-invalid' : '' ?>"><?php foreach ($story_ids as $story_id) {
-                                                                                                                                echo $story_id['story'] ?? '';
-                                                                                                                            } ?></textarea>
+                                                                                                                                    echo $story_id['story'] ?? '';
+                                                                                                                                } ?></textarea>
             <small class="invalid-feedback">
                 <?= $error_msg['stories'] ?? "" ?>
             </small>
@@ -157,7 +156,11 @@ if (isset($_SESSION['success'])) : ?>
         <div class="row">
             <div class="form-group d-flex">
                 <div class="col-6">
-                    <input type="file" name="upload_img">
+                    <input type="file" name="upload_img"
+                        class="<?php echo isset($error_msg['upload_img']) ? 'is-invalid' : '' ?>">
+                    <small class="invalid-feedback">
+                        <?= $error_msg['upload_img'] ?? "" ?>
+                    </small>
                 </div>
                 <div class="col-6 mls">
                     <?php if (isset($_GET['id'])) : ?>
@@ -169,6 +172,12 @@ if (isset($_SESSION['success'])) : ?>
             </div>
         </div>
     </form>
+    <?php else : ?>
+    <p class="lead text-center">Please <a href="users/login.php">login</a> to make a post or <a
+            href="users/login.php">register</a>
+        an account
+    </p>
+    <?php endif ?>
 </div>
 </div>
 <div class="container mt-3 mb-3">

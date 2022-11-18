@@ -3,7 +3,7 @@ session_start();
 require_once "../utility/head.html";
 require_once "../utility/nav.php";
 ?>
-<h2 class="text-center text-danger">Login Here</h2>
+<h2 class="text-center text-danger">Change Password</h2>
 <div class="container-sm">
     <div class="container">
         <?php if (isset($_SESSION['error'])) : ?>
@@ -23,15 +23,7 @@ require_once "../utility/nav.php";
                     <?= $_SESSION['email'] ?? '' ?>
                 </small>
             </div>
-            <div class="form-group">
-                <label for="">Password</label>
-                <input type="password" name="password" id=""
-                    class="form-control <?php echo isset($_SESSION['password']) ? 'is-invalid' : '' ?>">
-                <small class="invalid-feedback">
-                    <?= $_SESSION['password'] ?? '' ?>
-                </small>
-            </div>
-            <input type="submit" value="Login" class="btn btn-primary" name="login">
+            <input type="submit" value="Update Email" class="btn btn-danger" name="change_email">
         </form>
     </div>
 </div>

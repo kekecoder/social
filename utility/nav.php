@@ -24,7 +24,10 @@ session_regenerate_id();
                 <a class="nav-link" href="#">Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link">Logout</a>
+                <form action="../process/action.php" method="post">
+                    <input type="hidden" name="id" value="<?= $_SESSION['id'] ?>">
+                    <input type="submit" value="Logout" class="btn btn-outline-danger">
+                </form>
             </li>
         </ul>
     </div>
