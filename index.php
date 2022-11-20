@@ -120,7 +120,8 @@ if (isset($_SESSION['success'])) : ?>
 <?php endif ?>
 <div class="jumbotron jumbotron-fluid">
     <div class="container text-center">
-        <h1 class="display">Welcome <?php echo (isset($_SESSION['username'])) ? $_SESSION['username'] : '' ?></h1>
+        <h1 class="display">Welcome <?php echo (isset($_SESSION['username'])) ? ucfirst($_SESSION['username']) : '' ?>
+        </h1>
         <p class="lead">This is your personal Page</p>
     </div>
 </div>
@@ -186,7 +187,11 @@ if (isset($_SESSION['success'])) : ?>
     <?php endif ?>
     <?php foreach ($rows as $row) : ?>
     <div class="card mb-3" style="width: 100%;">
+        <?php if (isset($row['image_path'])) : ?>
         <img class="card-img-top" src="image/<?= $row['image_path'] ?>" alt="">
+        <?php else : ?>
+        <img class="card-img-top" src="" alt="">
+        <?php endif ?>
         <div class='card-body bg-secondary text-white'>
             <p class='card-text'>
                 <?= $row['story'] ?>

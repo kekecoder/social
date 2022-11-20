@@ -64,15 +64,8 @@ function get_id(int $id)
 
 function logout()
 {
-    $user = $_SESSION['id'] ?? false;
-    if ($user) {
-        unset($user);
-        session_destroy();
-    } else {
-        return false;
-    }
-
-    return $user;
+    unset($_SESSION);
+    session_destroy();
 }
 
 function change_email($email, $id)
@@ -89,4 +82,14 @@ function change_email($email, $id)
     }
 
     return $query;
+}
+
+function get_user(string $email)
+{
+    $conn = db();
+    $query = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $query->bind_param('s', $email);
+    $query->execute();
+
+    return $query->get_result()->fetch_assoc();
 }

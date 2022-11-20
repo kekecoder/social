@@ -2,6 +2,9 @@
 session_start();
 require_once "../utility/head.html";
 require_once "../utility/nav.php";
+if (isset($_SESSION['username'])) {
+    header("Location: /");
+}
 ?>
 <h2 class="text-center text-danger">Login Here</h2>
 <div class="container-sm">
@@ -36,5 +39,5 @@ require_once "../utility/nav.php";
     </div>
 </div>
 <?php require_once "../utility/util.html";
-session_destroy();
+session_destroy()
 ?>

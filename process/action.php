@@ -54,11 +54,15 @@ switch (true) {
 
         if (empty($_SESSION)) {
             register($first_name, $last_name, $email, $country, $password);
-            $_SESSION['username'] = $first_name;
+            $result = get_user($email);
+            $_SESSION['id'] = $result['id'];
+            $_SESSION['email'] = $result['email'];
+            $_SESSION['username'] = $result['first_name'];
             $_SESSION['success'] = "Registration Completed";
             header('Location: /');
         }
         break;
+
     case isset($_POST['login']):
         $email = valid_string($_POST['email']);
         $password = valid_string($_POST['password']);
@@ -100,6 +104,7 @@ switch (true) {
             }
         }
         break;
+
     case isset($_POST['change_password']):
         $email = valid_string($_POST['email']);
         $password = valid_string($_POST['password']);
@@ -136,16 +141,16 @@ switch (true) {
 
         if (empty($_SESSION)) {
             change_password($email, $password);
+            $result = get_user($email);
+            $_SESSION['id'] = $result['id'];
+            $_SESSION['email'] = $result['email'];
+            $_SESSION['username'] = $result['first_name'];
             $_SESSION['success'] = "Password Changed successfully";
-            header('Location: /users/change-pass.php');
+            header('Location: /');
         }
         break;
-    case isset($_POST['id']):
-        logout();
-        $_SESSION['success'] = "You are logged out";
-        header("Location: /users/login.php");
-        break;
-    case isset($_POST['change_email']):
+
+    case isset($_POST['update_email']):
         $email = valid_string($_POST['email']);
         if (!$email) {
             $_SESSION['email'] = REQUIRED;
@@ -154,11 +159,25 @@ switch (true) {
             $_SESSION['email'] = "This is not the required email format";
             header('Location: /users/change-email.php');
         } elseif (email_exists($email)) {
-            $_SESSION['email'] = "This email is already taken";
+            $_SESSION['email'] = "This email already exist";
             header('Location: /users/change-email.php');
         }
+
         if (empty($_SESSION)) {
+            change_email($email, $_POST['id']);
+            if ($result = get_user($email)) {
+                $_SESSION['id'] = $result['id'];
+                $_SESSION['email'] = $result['email'];
+                $_SESSION['username'] = $result['first_name'];
+                $_SESSION['success'] = "Email Updated";
+                header('Location: /');
+            }
         }
+        break;
+
+    case isset($_POST['id']):
+        logout();
+        header("Location: /users/login.php");
         break;
     default:
         http_response_code(404);

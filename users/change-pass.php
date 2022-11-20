@@ -44,5 +44,5 @@ require_once "../utility/nav.php";
     </div>
 </div>
 <?php require_once "../utility/util.html";
-session_destroy();
+session_destroy()
 ?>

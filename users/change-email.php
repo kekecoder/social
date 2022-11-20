@@ -16,6 +16,9 @@ require_once "../utility/nav.php";
         <?php endif ?>
         <form action="/process/action.php" method="post">
             <div class="form-group">
+                <input type="hidden" name="id" value="<?= $_SESSION['id'] ?? null ?>">
+            </div>
+            <div class="form-group">
                 <label for="">Email</label>
                 <input type="email" name="email" id=""
                     class="form-control <?php echo isset($_SESSION['email']) ? 'is-invalid' : '' ?>">
@@ -23,10 +26,10 @@ require_once "../utility/nav.php";
                     <?= $_SESSION['email'] ?? '' ?>
                 </small>
             </div>
-            <input type="submit" value="Update Email" class="btn btn-danger" name="change_email">
+            <input type="submit" value="Update Email" class="btn btn-danger" name="update_email">
         </form>
     </div>
 </div>
 <?php require_once "../utility/util.html";
-session_destroy();
+session_destroy()
 ?>

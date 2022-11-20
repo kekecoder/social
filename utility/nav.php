@@ -12,23 +12,24 @@ session_regenerate_id();
             <li class="nav-item active">
                 <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
             </li>
-            <?php if (!isset($_SESSION['username'])) : ?>
-            <li class="nav-item">
-                <a class="nav-link" href="/users/register.php">Register</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link">Login</a>
-            </li>
-            <?php endif ?>
+            <?php if (isset($_SESSION['username'])) : ?>
             <li class="nav-item">
                 <a class="nav-link" href="#">Profile</a>
             </li>
             <li class="nav-item">
                 <form action="../process/action.php" method="post">
-                    <input type="hidden" name="id" value="<?= $_SESSION['id'] ?>">
+                    <input type="hidden" name="id" value="<?= $_SESSION['id']  ?? null ?>">
                     <input type="submit" value="Logout" class="btn btn-outline-danger">
                 </form>
             </li>
+            <?php else : ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/users/register.php">Register</a>
+            </li>
+            <li class="nav-item">
+                <a href="/users/login.php" class="nav-link">Login</a>
+            </li>
+            <?php endif ?>
         </ul>
     </div>
 </nav>
