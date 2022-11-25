@@ -4,8 +4,9 @@ require_once 'dbconfig.php';
 function insert(string $story, $img = "", $user_id)
 {
     $conn = db();
-    $query = $conn->prepare("INSERT INTO stories(story, image_path, user_id, created_at) VALUES(?, ?, ?,'NOW()');");
-    $query->bind_param("ssi", $story, $img, $user_id);
+    $date = date("Y-m-d H:i:s");
+    $query = $conn->prepare("INSERT INTO stories(story, image_path, user_id, created_at) VALUES(?, ?, ?, ?);");
+    $query->bind_param("ssis", $story, $img, $user_id, $date);
     $query->execute();
 
     return $query;

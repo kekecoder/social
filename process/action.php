@@ -86,13 +86,11 @@ switch (true) {
         if (empty($_SESSION)) {
             if ($result = login($email)) {
                 $id = $result['id'];
-                $user_id = $result['user_id'];
                 $username = $result['first_name'];
                 $hashed_pass = $result['password'];
 
                 if (password_verify($password, $hashed_pass)) {
                     $_SESSION['id'] = $id;
-                    $_SESSION['user_id'] = $user_id;
                     $_SESSION['username'] = $username;
                     $_SESSION['success'] = "Login Successful";
                     header("Location: /");

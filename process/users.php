@@ -5,9 +5,10 @@ require_once "dbconfig.php";
 function register($first_name, $last_name, $email, $country, $password)
 {
     $conn = db();
-    $query = $conn->prepare("INSERT INTO users (first_name, last_name, email, country, password, created_at) VALUES(?, ?, ?, ?, ?, 'now()')");
+    $date = date("Y-m-d H:i:s");
+    $query = $conn->prepare("INSERT INTO users (first_name, last_name, email, country, password, created_at) VALUES(?, ?, ?, ?, ?, ?)");
     $hash_pass = password_hash($password, PASSWORD_DEFAULT);
-    $query->bind_param('sssss', $first_name, $last_name, $email, $country, $hash_pass);
+    $query->bind_param('ssssss', $first_name, $last_name, $email, $country, $hash_pass, $date);
     $query->execute();
     return $query;
 }
