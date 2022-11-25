@@ -1,6 +1,10 @@
 <?php
 session_start();
+if (!$_SESSION['id']) {
+    header("Location: users/login.php");
+}
 require_once('process/dblib.php');
+require_once('process/users.php');
 $conn = db();
 $limit = 6;
 $query = "SELECT * FROM stories";
@@ -39,8 +43,8 @@ if (isset($_GET['id'])) {
 
 if (isset($_POST['submit'])) {
     $story = trim(htmlspecialchars(($_POST['stories']), ENT_QUOTES));
-    $date = date('Y-m-d H:i');
     $id = $_POST['id'] ?? '';
+    $user_id = $_POST['user_id'];
 
     if (empty($story)) {
         $error_msg['stories'] = "This field cannot be empty";
@@ -85,7 +89,7 @@ if (isset($_POST['submit'])) {
             $story_ids = [];
             // header("Location: /");
         } else {
-            $query = insert($story, $date, $img_path ?? null);
+            $query = insert($story, $img_path ?? null, $user_id);
             if ($query->affected_rows === 1) {
                 $success[] = "Story Successfully posted";
             } else {
@@ -146,6 +150,7 @@ if (isset($_SESSION['success'])) : ?>
         </div>
         <div class="form-group">
             <label for="post">Create Post</label>
+            <input type="hidden" name="user_id" value="<?= $_SESSION['id'] ?>">
             <textarea name="stories"
                 class="form-control <?php echo isset($error_msg['stories']) ? 'is-invalid' : '' ?>"><?php foreach ($story_ids as $story_id) {
                                                                                                                                     echo $story_id['story'] ?? '';
@@ -196,6 +201,13 @@ if (isset($_SESSION['success'])) : ?>
             <p class='card-text'>
                 <?= $row['story'] ?>
             </p>
+            <?php
+                // echo '<pre>';
+                // var_dump($_SESSION);
+                // echo '</pre>';
+                //exit;
+                ?>
+            <?php if ($_SESSION['id'] == $row['user_id']) : ?>
             <div class='card-footer'>
                 <div class='row'>
                     <div class='col'>
@@ -209,6 +221,7 @@ if (isset($_SESSION['success'])) : ?>
                     </div>
                 </div>
             </div>
+            <?php endif ?>
         </div>
     </div>
 

@@ -52,11 +52,11 @@ function change_password(string $email, string $password)
     return $query;
 }
 
-function get_id(int $id)
+function get_id($email)
 {
     $conn = db();
-    $query = $conn->prepare("SELECT * FROM users WHERE id = ?");
-    $query->bind_param("i", $id);
+    $query = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $query->bind_param("s", $email);
     $query->execute();
 
     return $query->get_result()->fetch_assoc();
