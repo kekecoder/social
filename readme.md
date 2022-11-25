@@ -14,3 +14,5 @@ This project is basically a demo project to create a social media platform makin
 - File Upload
 - Renaming image before uploading
 - Saving image to the database
+- Only login users can delete what they posted
+- Authorization and Authentication

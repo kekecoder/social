@@ -1,9 +1,17 @@
+.top {
+  margin: 0 auto;
+}
+
 .mls {
   margin-left: 6.7rem;
 }
 
 .fml {
-  margin-left: 10rem;
+  margin-left: 2rem;
+}
+
+.btn-post-update {
+  margin-left: -6.5rem;
 }
 
 textarea {
@@ -18,6 +26,10 @@ textarea {
 
   .fml {
     margin-left: 10rem;
+  }
+
+  .btn-post-update {
+    margin-left: -116.5rem;
   }
 }
 
@@ -38,6 +50,14 @@ textarea {
     width: 65% !important;
     margin: 0 auto;
     height: 190px !important;
+  }
+
+  .upload-button {
+    margin-left: 11.7rem;
+  }
+
+  .btn-post-update {
+    margin-left: -3.8rem;
   }
 
   label {

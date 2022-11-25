@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!$_SESSION['id']) {
+if (!isset($_SESSION['id'])) {
     header("Location: users/login.php");
 }
 require_once('process/dblib.php');
@@ -129,7 +129,7 @@ if (isset($_SESSION['success'])) : ?>
         <p class="lead">This is your personal Page</p>
     </div>
 </div>
-<div class="container">
+<div class="container top">
     <?php
     if (isset($success)) : ?>
     <?php foreach ($success as $pass) : ?>
@@ -163,16 +163,18 @@ if (isset($_SESSION['success'])) : ?>
             <div class="form-group d-flex">
                 <div class="col-6">
                     <input type="file" name="upload_img"
-                        class="<?php echo isset($error_msg['upload_img']) ? 'is-invalid' : '' ?>">
+                        class="<?php echo isset($error_msg['upload_img']) ? 'is-invalid' : '' ?> upload-button">
                     <small class="invalid-feedback">
-                        <?= $error_msg['upload_img'] ?? "" ?>
+                        <?= isset($error_msg['upload_img']) ?? "" ?>
                     </small>
                 </div>
                 <div class="col-6 mls">
                     <?php if (isset($_GET['id'])) : ?>
-                    <input type="submit" name="submit" value="Update Post" class="btn btn-outline-primary btn-sm">
+                    <input type="submit" name="submit" value="Update Post"
+                        class="btn-post-update btn btn-outline-primary btn-sm">
                     <?php else : ?>
-                    <input type="submit" name="submit" value="Create Post" class="btn btn-outline-danger btn-sm">
+                    <input type="submit" name="submit" value="Create Post"
+                        class="btn-post-update btn btn-outline-danger btn-sm">
                     <?php endif ?>
                 </div>
             </div>
@@ -191,7 +193,7 @@ if (isset($_SESSION['success'])) : ?>
     <?= "No Stories" ?>
     <?php endif ?>
     <?php foreach ($rows as $row) : ?>
-    <div class="card mb-3" style="width: 100%;">
+    <div class="card mb-3" style="width: 90%;">
         <?php if (isset($row['image_path'])) : ?>
         <img class="card-img-top" src="image/<?= $row['image_path'] ?>" alt="">
         <?php else : ?>
@@ -201,12 +203,6 @@ if (isset($_SESSION['success'])) : ?>
             <p class='card-text'>
                 <?= $row['story'] ?>
             </p>
-            <?php
-                // echo '<pre>';
-                // var_dump($_SESSION);
-                // echo '</pre>';
-                //exit;
-                ?>
             <?php if ($_SESSION['id'] == $row['user_id']) : ?>
             <div class='card-footer'>
                 <div class='row'>

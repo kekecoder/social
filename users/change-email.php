@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION['id'])) {
+    header("Location: users/login.php");
+}
 require_once "../utility/head.html";
 require_once "../utility/nav.php";
 ?>
