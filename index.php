@@ -76,11 +76,10 @@ if (isset($_POST['submit'])) {
 
             if (in_array($file_type, $allowed_img)) {
                 // $img_path = random_string(10) . str_replace(" ", " ", basename($_FILES["upload_img"]["name"]));
-                $img_path = random_string(10) . "." . $ext;
-
                 if (!file_exists("/app/image")) {
                     mkdir('/app/image');
                 }
+                $img_path = random_string(10) . "." . $ext;
 
                 move_uploaded_file($_FILES['upload_img']['tmp_name'], "image/" . $img_path);
             }
