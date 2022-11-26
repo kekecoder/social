@@ -83,10 +83,11 @@ if (isset($_POST['submit'])) {
                 $img_path = random_string(10) . "." . $ext;
 
                 $imageDir = 'image/';
+                if (!file_exists($imageDir)) {
+                    mkdir('/image', 0777, true);
+                }
 
-                move_uploaded_file($_FILES['upload_img']['tmp_name'], $imageDir . $img_path);
-
-                chmod($imageDir, 0644);
+                move_uploaded_file($_FILES['upload_img']['tmp_name'], 'image/' . $img_path);
             }
         }
         if ($id) {
