@@ -1,5 +1,7 @@
 <?php
 session_start();
+phpinfo();
+exit;
 if (!isset($_SESSION['id'])) {
     header("Location: users/login.php");
 }
