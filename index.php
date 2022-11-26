@@ -82,7 +82,7 @@ if (isset($_POST['submit'])) {
                 // }
                 $img_path = random_string(10) . "." . $ext;
 
-                move_uploaded_file($_FILES['upload_img']['tmp_name'], "/" . $img_path);
+                move_uploaded_file($_FILES['upload_img']['tmp_name'], $img_path);
             }
         }
         if ($id) {
@@ -200,7 +200,7 @@ if (isset($_SESSION['success'])) : ?>
     <?php foreach ($rows as $row) : ?>
     <div class="card mb-3" style="width: 90%;">
         <?php if (isset($row['image_path'])) : ?>
-        <img class="card-img-top" src="/<?= $row['image_path'] ?>" alt="">
+        <img class="card-img-top" src="<?= $row['image_path'] ?>" alt="">
         <?php else : ?>
         <img class="card-img-top" src="" alt="">
         <?php endif ?>
