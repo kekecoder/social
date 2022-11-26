@@ -1,9 +1,5 @@
 <?php
-
-echo '<pre>';
-var_dump($_SERVER);
-echo '</pre>';
-exit;
+session_start();
 if (!isset($_SESSION['id'])) {
     header("Location: users/login.php");
 }
@@ -86,7 +82,11 @@ if (isset($_POST['submit'])) {
                 // }
                 $img_path = random_string(10) . "." . $ext;
 
-                move_uploaded_file($_FILES['upload_img']['tmp_name'], $img_path);
+                $imageDir = 'image/';
+
+                move_uploaded_file($_FILES['upload_img']['tmp_name'], $imageDir . $img_path);
+
+                chmod($imageDir, 0644);
             }
         }
         if ($id) {
