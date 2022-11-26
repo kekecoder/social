@@ -76,13 +76,13 @@ if (isset($_POST['submit'])) {
 
             if (in_array($file_type, $allowed_img)) {
                 // $img_path = random_string(10) . str_replace(" ", " ", basename($_FILES["upload_img"]["name"]));
-                exec("chmod -R 777 /app");
-                if (!file_exists("/app/image")) {
-                    mkdir('/app/image');
-                }
+                // exec("chmod -R 777 /app");
+                // if (!file_exists("/app/image")) {
+                //     mkdir('/app/image');
+                // }
                 $img_path = random_string(10) . "." . $ext;
 
-                move_uploaded_file($_FILES['upload_img']['tmp_name'], "image/" . $img_path);
+                move_uploaded_file($_FILES['upload_img']['tmp_name'], "/" . $img_path);
             }
         }
         if ($id) {
@@ -200,7 +200,7 @@ if (isset($_SESSION['success'])) : ?>
     <?php foreach ($rows as $row) : ?>
     <div class="card mb-3" style="width: 90%;">
         <?php if (isset($row['image_path'])) : ?>
-        <img class="card-img-top" src="image/<?= $row['image_path'] ?>" alt="">
+        <img class="card-img-top" src="/<?= $row['image_path'] ?>" alt="">
         <?php else : ?>
         <img class="card-img-top" src="" alt="">
         <?php endif ?>
