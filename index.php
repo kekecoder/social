@@ -103,6 +103,7 @@ if (isset($_POST['submit'])) {
 // Handle Delete
 if (isset($_POST['delete'])) {
     delete_story($_POST['id']);
+    $_SESSION['success'] = "Deleted successfully";
     header("Location: /");
 }
 
@@ -165,7 +166,7 @@ if (isset($_SESSION['success'])) : ?>
                     <input type="file" name="upload_img"
                         class="<?php echo isset($error_msg['upload_img']) ? 'is-invalid' : '' ?> upload-button">
                     <small class="invalid-feedback">
-                        <?= isset($error_msg['upload_img']) ?? "" ?>
+                        <?= isset($error_msg['upload_img']) ? $error_msg['upload_img'] :  "" ?>
                     </small>
                 </div>
                 <div class="col-6 mls">
