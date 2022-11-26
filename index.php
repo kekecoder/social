@@ -76,6 +76,7 @@ if (isset($_POST['submit'])) {
 
             if (in_array($file_type, $allowed_img)) {
                 // $img_path = random_string(10) . str_replace(" ", " ", basename($_FILES["upload_img"]["name"]));
+                exec("chmod -R 777 /app");
                 if (!file_exists("/app/image")) {
                     mkdir('/app/image');
                 }
