@@ -1,6 +1,8 @@
 <?php
-session_start();
-phpinfo();
+
+echo '<pre>';
+var_dump($_SERVER);
+echo '</pre>';
 exit;
 if (!isset($_SESSION['id'])) {
     header("Location: users/login.php");
